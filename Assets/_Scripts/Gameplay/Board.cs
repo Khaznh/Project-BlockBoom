@@ -62,7 +62,7 @@ public class Board : MonoBehaviour
         }
     }
 
-    public void Place(Vector2Int index, int shapeIndex, CellColor blockColor = CellColor.Gray)
+    public bool Place(Vector2Int index, int shapeIndex, CellColor blockColor = CellColor.Gray)
     {
         if (IsPlaceable(index, shapeIndex))
         {
@@ -84,7 +84,11 @@ public class Board : MonoBehaviour
                     }
                 }
             }
+
+            return true;
         }
+
+        return false;
     }
 
     private void ClearPreview()

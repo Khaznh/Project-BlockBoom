@@ -3,9 +3,13 @@ using UnityEngine.EventSystems;
 
 public class Block : MonoBehaviour, IEndDragHandler, IDragHandler, IBeginDragHandler
 {
+    [Header("Init data")]
     [SerializeField] private GameObject cellPrefab;
     [SerializeField] private Vector3 offset = new Vector3(0, 1.5f, 0);
+
+    [Header("Asigned Variable")]
     [SerializeField] private Board board;
+    [SerializeField] private BlockHolder blockHolder;
 
     private const int SIZE = 3;
     private Cell[,] blockCells = new Cell[SIZE, SIZE];
@@ -14,9 +18,10 @@ public class Block : MonoBehaviour, IEndDragHandler, IDragHandler, IBeginDragHan
 
     private int currentShapeIndex = 0;
 
-    public void Init(Board board)
+    public void Init(Board board, BlockHolder blockHolder)
     {
         this.board = board;
+        this.blockHolder = blockHolder;
 
         for (int x = SIZE - 1; x >= 0; x--)
         {
@@ -129,7 +134,14 @@ public class Block : MonoBehaviour, IEndDragHandler, IDragHandler, IBeginDragHan
         SetSizeCell(BlockStatus.NotHold);
         DistanceCell(BlockStatus.NotHold);
 
-        transform.position = initialPosition;
+        if (TryGetIndex(transform.position, out Vector2Int index) && board.Place(index, currentShapeIndex))
+        {
+            blockHolder.DespawnBlock(this);
+
+        } else
+        {
+            transform.position = initialPosition;
+        }
     }
 
     private bool TryGetIndex(Vector3 centerPos, out Vector2Int index)
