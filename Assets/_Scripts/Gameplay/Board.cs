@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
@@ -10,29 +11,20 @@ public class Board : MonoBehaviour
     private Cell[,] boardCells;
     private CellState[,] boardCellStates;
 
+    [SerializeField] private List<int> deleteRow = new();
+    [SerializeField] private List<int> deleteCol = new();
+
     private void Awake()
     {
         boardCells = new Cell[size, size];
         boardCellStates = new CellState[size, size];
+
+        EventManager.Instance.OnBlockPlaced += HandleLogicAfterPlace;
     }
 
     private void Start()
     {
         SpawnBoard();
-    }
-
-    private void SpawnBoard()
-    {
-        for (int x = 0; x < size; x++)
-        {
-            for (int y = 0; y < size; y++)
-            {
-                GameObject cellIns = Instantiate(cellPrefab, cellHolder);
-                cellIns.transform.localPosition = new Vector3(-3.5f + x, -3.5f + y, 0);
-                boardCells[x, y] = cellIns.GetComponent<Cell>();
-                boardCells[x, y].Hide();
-            }
-        }
     }
 
     public void Preview(Vector2Int index, int shapeIndex, CellColor blockColor = CellColor.Gray)
@@ -89,6 +81,20 @@ public class Board : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void SpawnBoard()
+    {
+        for (int x = 0; x < size; x++)
+        {
+            for (int y = 0; y < size; y++)
+            {
+                GameObject cellIns = Instantiate(cellPrefab, cellHolder);
+                cellIns.transform.localPosition = new Vector3(-3.5f + x, -3.5f + y, 0);
+                boardCells[x, y] = cellIns.GetComponent<Cell>();
+                boardCells[x, y].Hide();
+            }
+        }
     }
 
     private void ClearPreview()
@@ -149,6 +155,83 @@ public class Board : MonoBehaviour
         }
 
         return isPlaceable;
+    }
+
+    private void HandleLogicAfterPlace()
+    {
+        CheckFilledRowsAndColumns();
+
+        ClearRowsAndColumns();
+    }
+
+    private void CheckFilledRowsAndColumns()
+    {
+        ClearFill();
+
+        for (int i = 0; i < size; i++)
+        {
+            bool isColFilled = true;
+            for (int j = 0; j < size; j++)
+            {
+                if (boardCellStates[i, j] != CellState.Show)
+                {
+                    isColFilled = false;
+                }
+            }
+
+            if (isColFilled)
+            {
+                deleteCol.Add(i);
+            }
+        }
+
+        for (int i = 0; i < size; i++)
+        {
+            bool isColFilled = true;
+            for (int j = 0; j < size; j++)
+            {
+                if (boardCellStates[j, i] != CellState.Show)
+                {
+                    isColFilled = false;
+                }
+            }
+
+            if (isColFilled)
+            {
+                deleteRow.Add(i);
+            }
+        }
+    }
+
+    private void ClearRowsAndColumns()
+    {
+        for (int i = 0; i < deleteCol.Count; i++)
+        {
+            int colIndex = deleteCol[i];
+            for (int j = 0; j < size; j++)
+            {
+                boardCells[colIndex, j].Hide();
+                boardCellStates[colIndex, j] = CellState.Hide;
+                EventManager.Instance.OnColumnOrRowComplete?.Invoke();
+            }
+        }
+
+        for (int i = 0; i < deleteRow.Count; i++)
+        {
+            int rowIndex = deleteRow[i];
+            for (int j = 0; j < size; j++)
+            {
+                boardCells[j, rowIndex].Hide();
+                boardCellStates[j, rowIndex] = CellState.Hide;
+                EventManager.Instance.OnColumnOrRowComplete?.Invoke();
+            }
+        }
+    }
+
+    private void ClearFill()
+    {
+        deleteCol.Clear();
+        deleteRow.Clear();  
     }
 }
 

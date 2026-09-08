@@ -137,7 +137,7 @@ public class Block : MonoBehaviour, IEndDragHandler, IDragHandler, IBeginDragHan
         if (TryGetIndex(transform.position, out Vector2Int index) && board.Place(index, currentShapeIndex))
         {
             blockHolder.DespawnBlock(this);
-
+            EventManager.Instance.OnBlockPlaced?.Invoke();
         } else
         {
             transform.position = initialPosition;
