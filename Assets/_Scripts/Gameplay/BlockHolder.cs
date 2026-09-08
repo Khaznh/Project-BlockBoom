@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -56,6 +57,9 @@ public class BlockHolder : MonoBehaviour
         {
             GameObject blockIns = Instantiate(blockPrefab, transform);
             blocks.Add(blockIns.GetComponent<Block>());
+
+            int randomIndexColor = Enum.GetValues(typeof(CellColor)).Length;
+            blocks[i].blockColor = (CellColor)UnityEngine.Random.Range(0, randomIndexColor);
         }
     }
 }

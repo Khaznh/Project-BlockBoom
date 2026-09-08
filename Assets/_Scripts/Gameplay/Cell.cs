@@ -22,20 +22,19 @@ public class Cell : MonoBehaviour
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 
-    // Need to fix later
-    public void Show()
+    public void Show(CellColor cellColor)
     {
         gameObject.SetActive(true);
-        SetColor(CellColor.Gray);
         spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
+        SetColor(cellColor);
         SetSize(size);
     }
 
-    public void Hover()
+    public void Hover(CellColor cellColor)
     {
         gameObject.SetActive(true);
-        SetColor(CellColor.Gray);
         spriteRenderer.color = new Color(1f, 1f, 1f, 0.5f);
+        SetColor(cellColor);
     }
 
     public void Hide()

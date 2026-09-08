@@ -10,6 +10,7 @@ public class Block : MonoBehaviour, IEndDragHandler, IDragHandler, IBeginDragHan
     [Header("Asigned Variable")]
     [SerializeField] private Board board;
     [SerializeField] private BlockHolder blockHolder;
+    public CellColor blockColor = CellColor.Gray;
 
     private const int SIZE = 3;
     private Cell[,] blockCells = new Cell[SIZE, SIZE];
@@ -30,6 +31,7 @@ public class Block : MonoBehaviour, IEndDragHandler, IDragHandler, IBeginDragHan
                 GameObject cellIns = Instantiate(cellPrefab, transform);
                 cellIns.transform.localPosition = new Vector3(-0.5f + 0.5f * x, 0.5f - 0.5f * y, 0);
                 blockCells[x, y] = cellIns.GetComponent<Cell>();
+                cellIns.GetComponent<Cell>().SetColor(blockColor);
             }
         }
 
@@ -47,7 +49,7 @@ public class Block : MonoBehaviour, IEndDragHandler, IDragHandler, IBeginDragHan
             {
                 if (shape[x, y] == 1)
                 {
-                    blockCells[x, y].Show();
+                    blockCells[x, y].Show(blockColor);
                 }
                 else
                 {
@@ -125,7 +127,7 @@ public class Block : MonoBehaviour, IEndDragHandler, IDragHandler, IBeginDragHan
 
         if (TryGetIndex(transform.position, out Vector2Int index))
         {
-            board.Preview(index, currentShapeIndex);
+            board.Preview(index, currentShapeIndex, blockColor);
         }
     }
 
@@ -134,7 +136,7 @@ public class Block : MonoBehaviour, IEndDragHandler, IDragHandler, IBeginDragHan
         SetSizeCell(BlockStatus.NotHold);
         DistanceCell(BlockStatus.NotHold);
 
-        if (TryGetIndex(transform.position, out Vector2Int index) && board.Place(index, currentShapeIndex))
+        if (TryGetIndex(transform.position, out Vector2Int index) && board.Place(index, currentShapeIndex, blockColor))
         {
             blockHolder.DespawnBlock(this);
             EventManager.Instance.OnBlockPlaced?.Invoke();

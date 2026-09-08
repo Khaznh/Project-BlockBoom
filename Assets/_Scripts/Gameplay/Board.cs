@@ -46,7 +46,7 @@ public class Board : MonoBehaviour
                     int indexY = index.y - j;
                     if (shape[i + milestoneX, j + milestoneY] == 1)
                     {
-                        boardCells[indexX, indexY].Hover();
+                        boardCells[indexX, indexY].Hover(blockColor);
                         boardCellStates[indexX, indexY] = CellState.Preview;
                     }
                 }
@@ -71,7 +71,7 @@ public class Board : MonoBehaviour
                     int indexY = index.y - j;
                     if (shape[i + milestoneX, j + milestoneY] == 1)
                     {
-                        boardCells[indexX, indexY].Show();
+                        boardCells[indexX, indexY].Show(blockColor);
                         boardCellStates[indexX, indexY] = CellState.Show;
                     }
                 }
