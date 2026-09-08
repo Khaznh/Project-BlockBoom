@@ -120,12 +120,6 @@ public static class AvaiableShape
         },
         new int[,]
         {
-            {0, 0, 0},
-            {0, 1, 0},
-            {0, 0, 0}
-        },
-        new int[,]
-        {
             {0, 1, 0},
             {0, 1, 0},
             {0, 0, 0}
@@ -134,6 +128,12 @@ public static class AvaiableShape
         {
             {0, 0, 0},
             {0, 1, 1},
+            {0, 0, 0}
+        },
+        new int[,]
+        {
+            {0, 0, 0},
+            {0, 1, 0},
             {0, 0, 0}
         },
     };

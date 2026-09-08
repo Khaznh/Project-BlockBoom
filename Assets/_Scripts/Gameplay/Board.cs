@@ -22,6 +22,11 @@ public class Board : MonoBehaviour
         EventManager.Instance.OnBlockPlaced += HandleLogicAfterPlace;
     }
 
+    private void OnDestroy()
+    {
+        EventManager.Instance.OnBlockPlaced -= HandleLogicAfterPlace;
+    }
+
     private void Start()
     {
         SpawnBoard();
@@ -133,6 +138,11 @@ public class Board : MonoBehaviour
         {
             for (int j = -milestoneY; j <= milestoneY; j++)
             {
+                if (shape[i + milestoneX, j + milestoneY] == 0)
+                {
+                    continue;
+                }
+
                 int indexX = index.x + i;
                 int indexY = index.y - j;
 
@@ -212,8 +222,9 @@ public class Board : MonoBehaviour
             {
                 boardCells[colIndex, j].Hide();
                 boardCellStates[colIndex, j] = CellState.Hide;
-                EventManager.Instance.OnColumnOrRowComplete?.Invoke();
             }
+
+            EventManager.Instance.OnColumnOrRowComplete?.Invoke();
         }
 
         for (int i = 0; i < deleteRow.Count; i++)
@@ -223,8 +234,9 @@ public class Board : MonoBehaviour
             {
                 boardCells[j, rowIndex].Hide();
                 boardCellStates[j, rowIndex] = CellState.Hide;
-                EventManager.Instance.OnColumnOrRowComplete?.Invoke();
             }
+
+            EventManager.Instance.OnColumnOrRowComplete?.Invoke();
         }
     }
 
